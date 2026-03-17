@@ -4,8 +4,8 @@ module.exports = {
   apps: [
     {
       name: 'forgeapps',
-      script: 'npm',
-      args: 'run preview',
+      script: 'node_modules/vite/bin/vite.js',
+      args: 'preview --host --port 5173',
       env: {
         NODE_ENV: 'production',
         PORT: process.env.PORT ?? '5173',
