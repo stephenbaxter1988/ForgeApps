@@ -10,13 +10,24 @@ export function HowItWorks() {
         </h2>
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-10 md:gap-8 relative">
-        {/* Desktop connecting line */}
-        <div className="hidden md:block absolute top-7 left-[calc(16.67%+1rem)] right-[calc(16.67%+1rem)] h-px bg-forge-mid/20" />
-
+      {/* Desktop: badge row with a single unbroken line */}
+      <div className="hidden md:flex items-center relative mb-6">
+        <div className="absolute inset-x-7 top-1/2 -translate-y-1/2 h-px bg-forge-mid/20" />
         {COPY.howItWorks.steps.map((step) => (
-          <div key={step.number} className="relative text-center md:text-left">
-            <div className="inline-flex items-center justify-center w-14 h-14 rounded-2xl bg-white border border-forge-mid/20 mb-5 relative z-10">
+          <div key={step.number} className="flex-1 flex justify-center">
+            <div className="w-14 h-14 rounded-2xl bg-white border border-forge-mid/20 flex items-center justify-center relative z-10">
+              <span className="text-forge-mid font-extrabold text-lg">{step.number}</span>
+            </div>
+          </div>
+        ))}
+      </div>
+
+      {/* Text columns — shared grid for both desktop and mobile */}
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-10 md:gap-8">
+        {COPY.howItWorks.steps.map((step) => (
+          <div key={step.number} className="text-center md:text-left">
+            {/* Mobile-only badge */}
+            <div className="md:hidden inline-flex items-center justify-center w-14 h-14 rounded-2xl bg-white border border-forge-mid/20 mb-5">
               <span className="text-forge-mid font-extrabold text-lg">{step.number}</span>
             </div>
             <h3 className="font-bold text-forge-dark text-lg mb-3">{step.title}</h3>
