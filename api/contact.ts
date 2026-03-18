@@ -12,6 +12,11 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
     return res.status(400).json({ error: 'Missing required fields' })
   }
 
+  if (!process.env.SMTP_HOST || !process.env.SMTP_USER || !process.env.SMTP_PASS) {
+    console.error('Missing SMTP environment variables')
+    return res.status(500).json({ error: 'Server misconfiguration' })
+  }
+
   const transporter = nodemailer.createTransport({
     host: process.env.SMTP_HOST,
     port: Number(process.env.SMTP_PORT ?? 465),
@@ -22,20 +27,25 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
     },
   })
 
-  await transporter.sendMail({
-    from: process.env.SMTP_FROM,
-    to: process.env.SMTP_USER,
-    replyTo: email,
-    subject: `New enquiry from ${name}`,
-    text: `Name: ${name}\nEmail: ${email}${phone ? `\nPhone: ${phone}` : ''}\n\n${message}`,
-    html: `
-      <p><strong>Name:</strong> ${name}</p>
-      <p><strong>Email:</strong> ${email}</p>
-      ${phone ? `<p><strong>Phone:</strong> ${phone}</p>` : ''}
-      <p><strong>Message:</strong></p>
-      <p>${message.replace(/\n/g, '<br>')}</p>
-    `,
-  })
+  try {
+    await transporter.sendMail({
+      from: process.env.SMTP_FROM,
+      to: process.env.SMTP_USER,
+      replyTo: email,
+      subject: `New enquiry from ${name}`,
+      text: `Name: ${name}\nEmail: ${email}${phone ? `\nPhone: ${phone}` : ''}\n\n${message}`,
+      html: `
+        <p><strong>Name:</strong> ${name}</p>
+        <p><strong>Email:</strong> ${email}</p>
+        ${phone ? `<p><strong>Phone:</strong> ${phone}</p>` : ''}
+        <p><strong>Message:</strong></p>
+        <p>${message.replace(/\n/g, '<br>')}</p>
+      `,
+    })
+  } catch (err) {
+    console.error('Failed to send email:', err)
+    return res.status(500).json({ error: 'Failed to send email' })
+  }
 
   return res.status(200).json({ ok: true })
 }
