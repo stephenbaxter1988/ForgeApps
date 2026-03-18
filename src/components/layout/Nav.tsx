@@ -4,9 +4,10 @@ import { COPY } from '../../lib/constants'
 
 interface NavProps {
   onBookClick: () => void
+  onContactClick: () => void
 }
 
-export function Nav({ onBookClick }: NavProps) {
+export function Nav({ onBookClick, onContactClick }: NavProps) {
   const [scrolled, setScrolled] = useState(false)
 
   useEffect(() => {
@@ -30,7 +31,13 @@ export function Nav({ onBookClick }: NavProps) {
             className="h-[4.5rem] w-auto"
           />
         </a>
-        <div className={`transition-opacity duration-300 ${scrolled ? 'opacity-100' : 'opacity-0 pointer-events-none'}`}>
+        <div className={`flex items-center gap-3 transition-opacity duration-300 ${scrolled ? 'opacity-100' : 'opacity-0 pointer-events-none'}`}>
+          <button
+            onClick={onContactClick}
+            className="text-sm text-gray-500 hover:text-forge-dark underline underline-offset-4 transition-colors cursor-pointer"
+          >
+            Contact us
+          </button>
           <Button onClick={onBookClick} variant="primary">
             {COPY.nav.cta}
           </Button>

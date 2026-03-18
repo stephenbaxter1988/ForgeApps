@@ -4,9 +4,10 @@ import { ArrowRight } from 'lucide-react'
 
 interface HeroProps {
   onBookClick: () => void
+  onContactClick: () => void
 }
 
-export function Hero({ onBookClick }: HeroProps) {
+export function Hero({ onBookClick, onContactClick }: HeroProps) {
   return (
     <section className="relative flex items-start justify-center overflow-hidden">
       {/* Subtle background gradient */}
@@ -32,10 +33,18 @@ export function Hero({ onBookClick }: HeroProps) {
           {COPY.hero.subtext}
         </p>
 
-        <Button onClick={onBookClick} className="text-base px-8 py-4 gap-2">
-          {COPY.hero.cta}
-          <ArrowRight size={18} />
-        </Button>
+        <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
+          <Button onClick={onBookClick} className="text-base px-8 py-4 gap-2">
+            {COPY.hero.cta}
+            <ArrowRight size={18} />
+          </Button>
+          <button
+            onClick={onContactClick}
+            className="text-gray-400 hover:text-forge-dark text-sm underline underline-offset-4 transition-colors cursor-pointer"
+          >
+            or contact us
+          </button>
+        </div>
       </div>
     </section>
   )
