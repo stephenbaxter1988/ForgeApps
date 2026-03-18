@@ -57,7 +57,7 @@ app.post('/api/contact', async (req, res) => {
 })
 
 // Catch-all: serve the React app
-app.get('*', (_req, res) => {
+app.get('/{*path}', (_req, res) => {
   res.sendFile(path.join(__dirname, 'dist', 'index.html'))
 })
 
