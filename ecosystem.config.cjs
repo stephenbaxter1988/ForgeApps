@@ -9,7 +9,7 @@ module.exports = {
       interpreter_args: '--import tsx/esm',
       env: {
         NODE_ENV: 'production',
-        FA_PORT: process.env.FA_PORT ?? '5173',
+        FA_PORT: '5173',
       },
     },
   ],
