@@ -4,8 +4,9 @@ module.exports = {
   apps: [
     {
       name: 'forgeapps',
-      script: 'node_modules/.bin/tsx',
-      args: 'server.ts',
+      script: 'server.ts',
+      interpreter: 'node',
+      interpreter_args: '--import tsx/esm',
       env: {
         NODE_ENV: 'production',
         FA_PORT: process.env.FA_PORT ?? '5173',
