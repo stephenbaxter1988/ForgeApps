@@ -8,6 +8,7 @@ module.exports = {
       args: 'server.ts',
       env: {
         NODE_ENV: 'production',
+        FA_PORT: process.env.FA_PORT ?? '5173',
       },
     },
   ],
