@@ -1,20 +1,27 @@
+import 'dotenv/config'
+import express from 'express'
 import nodemailer from 'nodemailer'
-import type { VercelRequest, VercelResponse } from '@vercel/node'
+import path from 'path'
+import { fileURLToPath } from 'url'
 
-export default async function handler(req: VercelRequest, res: VercelResponse) {
-  if (req.method !== 'POST') {
-    return res.status(405).json({ error: 'Method not allowed' })
+const __dirname = path.dirname(fileURLToPath(import.meta.url))
+const app = express()
+const PORT = process.env.FA_PORT ?? 5717
+
+app.use(express.json())
+app.use(express.static(path.join(__dirname, 'dist')))
+
+app.post('/api/contact', async (req, res) => {
+  const { name, email, phone, message } = req.body as {
+    name?: string
+    email?: string
+    phone?: string
+    message?: string
   }
-
-  const { name, email, phone, message } = req.body as { name?: string; email?: string; phone?: string; message?: string }
 
   if (!name?.trim() || !email?.trim() || !message?.trim()) {
-    return res.status(400).json({ error: 'Missing required fields' })
-  }
-
-  if (!process.env.SMTP_HOST || !process.env.SMTP_USER || !process.env.SMTP_PASS) {
-    console.error('Missing SMTP environment variables')
-    return res.status(500).json({ error: 'Server misconfiguration' })
+    res.status(400).json({ error: 'Missing required fields' })
+    return
   }
 
   const transporter = nodemailer.createTransport({
@@ -42,10 +49,18 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
         <p>${message.replace(/\n/g, '<br>')}</p>
       `,
     })
+    res.json({ ok: true })
   } catch (err) {
     console.error('Failed to send email:', err)
-    return res.status(500).json({ error: 'Failed to send email' })
+    res.status(500).json({ error: 'Failed to send email' })
   }
+})
 
-  return res.status(200).json({ ok: true })
-}
+// Catch-all: serve the React app
+app.get('*', (_req, res) => {
+  res.sendFile(path.join(__dirname, 'dist', 'index.html'))
+})
+
+app.listen(PORT, () => {
+  console.log(`ForgeApps running on http://localhost:${PORT}`)
+})
